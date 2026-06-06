@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nuora COGS API for MobyBots</title>
+  <meta name="description" content="Simple partner documentation for the Nuora daily COGS API.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #111318;
+      --muted: #586071;
+      --line: #d9dde5;
+      --paper: #fbfaf7;
+      --panel: #ffffff;
+      --soft: #f0eee8;
+      --accent: #176b5b;
+      --accent-soft: #e3f2ed;
+      --warn: #8a5a00;
+      --code: #171a21;
+      --code-bg: #f4f1ea;
+      --shadow: 0 18px 50px rgba(21, 24, 31, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    main {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 72px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding: 32px 0 28px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.02;
+      letter-spacing: 0;
+      margin: 0 0 16px;
+      max-width: 760px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    section,
+    aside {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    aside {
+      position: sticky;
+      top: 18px;
+      box-shadow: none;
+      background: var(--soft);
+    }
+
+    h2 {
+      font-size: 20px;
+      line-height: 1.25;
+      margin: 0 0 14px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 22px 0 8px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 4px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border-top: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: #fafafa;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    code {
+      color: var(--code);
+      background: var(--code-bg);
+      border: 1px solid #e6dfd1;
+      border-radius: 5px;
+      padding: 1px 5px;
+      font-size: 0.92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      background: #12151c;
+      color: #eef3f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    pre code {
+      color: inherit;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 14px 16px;
+      border-radius: 6px;
+      margin-top: 14px;
+    }
+
+    .warning {
+      border-left-color: var(--warn);
+      background: #fff6df;
+      color: #513600;
+    }
+
+    .quick {
+      display: grid;
+      gap: 12px;
+      margin: 14px 0 0;
+    }
+
+    .quick div {
+      border-top: 1px solid rgba(17, 19, 24, 0.12);
+      padding-top: 12px;
+    }
+
+    .quick strong {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        width: min(100% - 24px, 680px);
+        padding-top: 24px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+        order: -1;
+      }
+
+      section,
+      aside {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">partner api handoff</p>
+      <h1>Nuora daily COGS API for MobyBots</h1>
+      <p class="lead">
+        Use this endpoint to fetch daily cost of goods sold values for profit tracking. The API returns only COGS values and finality status, so MobyBots can combine it with its own Shopify revenue data.
+      </p>
+      <div class="pill-row" aria-label="api highlights">
+        <span class="pill">usd cents</span>
+        <span class="pill">zurich dates</span>
+        <span class="pill">daily or range</span>
+        <span class="pill">bearer token</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <article>
+        <section>
+          <h2>Endpoint</h2>
+          <p>Send a <code>GET</code> request to:</p>
+          <pre><code>https://nuora-finance.vercel.app/api/integrations/cogs/daily</code></pre>
+
+          <h3>Authentication</h3>
+          <p>Include the API key in the <code>Authorization</code> header:</p>
+          <pre><code>Authorization: Bearer &lt;api_key&gt;</code></pre>
+
+          <div class="callout warning">
+            The API key is provided privately. It is not published on this page.
+          </div>
+        </section>
+
+        <section>
+          <h2>Input</h2>
+          <p>The endpoint accepts an inclusive date range using Zurich calendar dates.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Required</th>
+                <th>Format</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>startDate</code></td>
+                <td>yes</td>
+                <td><code>YYYY-MM-DD</code></td>
+                <td>First day to return.</td>
+              </tr>
+              <tr>
+                <td><code>endDate</code></td>
+                <td>yes</td>
+                <td><code>YYYY-MM-DD</code></td>
+                <td>Last day to return. Must be the same as or after <code>startDate</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+          <ul>
+            <li>Maximum range: <code>90</code> days.</li>
+            <li>Future dates are not supported.</li>
+            <li>Earliest supported date: <code>2026-01-14</code>.</li>
+            <li>Use the same date for <code>startDate</code> and <code>endDate</code> to fetch one day.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Example Requests</h2>
+          <h3>One day</h3>
+          <pre><code>curl -X GET "https://nuora-finance.vercel.app/api/integrations/cogs/daily?startDate=2026-06-05&amp;endDate=2026-06-05" \
+  -H "Authorization: Bearer &lt;api_key&gt;"</code></pre>
+
+          <h3>Date range</h3>
+          <pre><code>curl -X GET "https://nuora-finance.vercel.app/api/integrations/cogs/daily?startDate=2026-06-02&amp;endDate=2026-06-06" \
+  -H "Authorization: Bearer &lt;api_key&gt;"</code></pre>
+        </section>
+
+        <section>
+          <h2>Output</h2>
+          <p>The response is JSON. COGS is returned in cents, in USD.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>schemaVersion</code></td>
+                <td>string</td>
+                <td>Response schema version.</td>
+              </tr>
+              <tr>
+                <td><code>timezone</code></td>
+                <td>string</td>
+                <td>Always <code>Europe/Zurich</code>.</td>
+              </tr>
+              <tr>
+                <td><code>currency</code></td>
+                <td>string</td>
+                <td>Always <code>USD</code>.</td>
+              </tr>
+              <tr>
+                <td><code>range</code></td>
+                <td>object</td>
+                <td>The requested <code>startDate</code> and <code>endDate</code>.</td>
+              </tr>
+              <tr>
+                <td><code>rangeStatus</code></td>
+                <td>string</td>
+                <td><code>final</code>, <code>estimated</code>, or <code>mixed</code>.</td>
+              </tr>
+              <tr>
+                <td><code>generatedAt</code></td>
+                <td>string</td>
+                <td>ISO timestamp when the response was generated.</td>
+              </tr>
+              <tr>
+                <td><code>days</code></td>
+                <td>array</td>
+                <td>One object per date.</td>
+              </tr>
+              <tr>
+                <td><code>days[].date</code></td>
+                <td>string</td>
+                <td>Calendar date.</td>
+              </tr>
+              <tr>
+                <td><code>days[].cogsCents</code></td>
+                <td>integer</td>
+                <td>COGS in USD cents. Example: <code>3234916</code> means <code>$32,349.16</code>.</td>
+              </tr>
+              <tr>
+                <td><code>days[].status</code></td>
+                <td>string</td>
+                <td><code>final</code> or <code>estimated</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Example Response</h2>
+          <pre><code>{
+  "schemaVersion": "2026-06-06",
+  "timezone": "Europe/Zurich",
+  "currency": "USD",
+  "range": {
+    "startDate": "2026-06-02",
+    "endDate": "2026-06-06"
+  },
+  "rangeStatus": "mixed",
+  "generatedAt": "2026-06-06T08:45:00.000Z",
+  "days": [
+    {
+      "date": "2026-06-02",
+      "cogsCents": 3134351,
+      "status": "final"
+    },
+    {
+      "date": "2026-06-03",
+      "cogsCents": 3120122,
+      "status": "final"
+    },
+    {
+      "date": "2026-06-04",
+      "cogsCents": 3532507,
+      "status": "estimated"
+    },
+    {
+      "date": "2026-06-05",
+      "cogsCents": 3234916,
+      "status": "estimated"
+    },
+    {
+      "date": "2026-06-06",
+      "cogsCents": 2166614,
+      "status": "estimated"
+    }
+  ]
+}</code></pre>
+        </section>
+
+        <section>
+          <h2>Status Logic</h2>
+          <ul>
+            <li><code>final</code>: COGS for that day is booked/reconciled from supplier data.</li>
+            <li><code>estimated</code>: COGS for that day is still projected because supplier cost data is not fully closed yet.</li>
+            <li><code>mixed</code>: the requested range contains both final and estimated days.</li>
+          </ul>
+          <div class="callout">
+            For today and other open days, MobyBots should treat <code>cogsCents</code> as the current best COGS value and use the <code>status</code> field to label it as estimated.
+          </div>
+        </section>
+
+        <section>
+          <h2>Error Responses</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Code</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>401</code></td>
+                <td><code>UNAUTHORIZED</code></td>
+                <td>Missing or invalid bearer token.</td>
+              </tr>
+              <tr>
+                <td><code>403</code></td>
+                <td><code>FORBIDDEN</code></td>
+                <td>The API key does not have <code>cogs:read</code> access.</td>
+              </tr>
+              <tr>
+                <td><code>400</code></td>
+                <td><code>INVALID_DATE_RANGE</code></td>
+                <td>Bad date format or <code>startDate</code> after <code>endDate</code>.</td>
+              </tr>
+              <tr>
+                <td><code>400</code></td>
+                <td><code>UNSUPPORTED_DATE_RANGE</code></td>
+                <td>Date is before supported history or in the future.</td>
+              </tr>
+              <tr>
+                <td><code>400</code></td>
+                <td><code>DATE_RANGE_TOO_LARGE</code></td>
+                <td>Range is over <code>90</code> days.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </article>
+
+      <aside>
+        <h2>Quick Summary</h2>
+        <div class="quick">
+          <div>
+            <strong>method</strong>
+            <code>GET</code>
+          </div>
+          <div>
+            <strong>base url</strong>
+            <code>https://nuora-finance.vercel.app/api/integrations/cogs/daily</code>
+          </div>
+          <div>
+            <strong>query params</strong>
+            <code>startDate</code>, <code>endDate</code>
+          </div>
+          <div>
+            <strong>auth</strong>
+            bearer api key with <code>cogs:read</code>
+          </div>
+          <div>
+            <strong>value field</strong>
+            <code>days[].cogsCents</code>
+          </div>
+          <div>
+            <strong>important</strong>
+            values are USD cents, not dollars
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
